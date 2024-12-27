@@ -46,34 +46,33 @@ If everything is set up _correctly_, you should see your new app running in your
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
-## Step 3: Modifying your App
+## Step 3: Packages used
 
-Now that you have successfully run the app, let's modify it.
+### FlashList 
+In place of Flatlist, I have used FlashList for smooth rendering of data
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+### react-native-mmkv
+For storing data for offline storage and it is faster then async-storage and sqlite
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+### react-native-vector-icons 
+For icons like search and filter
 
-## Congratulations! :tada:
+### @react-native-community/netinfo 
+To get the current status of the app
 
-You've successfully run and modified your React Native App. :partying_face:
+### Step 4: My Approach
 
-### Now what?
+I made a json file of the given data and setup the project. I have rendered the data in Flashlist and represented a card for each item then added a header to perform search and sort operations. 
+I have useMemo and useCallback hooks of react in functions so that they will not recall or recalculate if my component re renders on any state update. Then I have implemente offline functionality. When My component mounts it check the status of internet if it is there then the data stored in mmkv and if it is not there then get the data from storage.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+I have used debounce for searching operation and sort() method of js for sorting. I have tried quickSort or mergeSort for better sorting for large data but it was taking more time than sort() that's why I have kept it.
 
-# Troubleshooting
+### Step 5: Performance
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+I have not seen any lag in debugging mode and rerendering is not happening unless any state changes. I am attaching a screenshot of react devtools and perf monitor which shows 60 fps in emulator which is good
 
-# Learn More
+![Screenshot_1735290034](https://github.com/user-attachments/assets/f5e5c16c-b5dd-44cb-8c22-5d137fef22d8)
 
-To learn more about React Native, take a look at the following resources:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+![Screenshot 2024-12-27 143104](https://github.com/user-attachments/assets/5169a2f8-7e35-446e-a66d-dcf96cf00fe7)
