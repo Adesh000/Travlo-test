@@ -5,10 +5,15 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import React, {memo} from 'react';
+import React, {FC, memo} from 'react';
 import styles from './styles';
+import {FilterModalProps} from '../../utils';
 
-const FilterModal = ({isVisible, closeModal, setSortOption}) => {
+const FilterModal: FC<FilterModalProps> = ({
+  isVisible,
+  closeModal,
+  setSortOption,
+}) => {
   return (
     <Modal visible={isVisible} transparent animationType="fade">
       <TouchableWithoutFeedback accessible={false} onPress={closeModal}>
