@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import styles from './styles';
 
 const FilterModal = ({isVisible, closeModal, setSortOption}) => {
@@ -37,4 +37,6 @@ const FilterModal = ({isVisible, closeModal, setSortOption}) => {
   );
 };
 
-export default FilterModal;
+const MemoizesFilterModal = memo(FilterModal);
+
+export default MemoizesFilterModal;

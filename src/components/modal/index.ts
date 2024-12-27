@@ -1,2 +1,2 @@
-import FilterModal from './FilterModal';
-export {FilterModal};
+import MemoizesFilterModal from './FilterModal';
+export {MemoizesFilterModal};

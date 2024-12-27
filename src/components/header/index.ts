@@ -1,2 +1,3 @@
 import AppHeader from './AppHeader';
-export {AppHeader};
+import NoInternetHeader from './NoInternetHeader';
+export {AppHeader, NoInternetHeader};

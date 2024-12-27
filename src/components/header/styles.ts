@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#FFF',
   },
+  internetHeaderStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'red',
+  },
 });
 
 export default styles;

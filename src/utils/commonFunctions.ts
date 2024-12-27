@@ -1,10 +1,4 @@
-// export const debounce = (fn: Function, delay: number) => {
-//   let timeout: NodeJS.Timeout;
-//   return (...args: any[]) => {
-//     if (timeout) clearTimeout(timeout);
-//     timeout = setTimeout(() => fn(...args), delay);
-//   };
-// };
+import {MMKV} from 'react-native-mmkv';
 
 export const debounce = (fn: Function, delay: number) => {
   let timeout: NodeJS.Timeout | null = null;
@@ -26,4 +20,15 @@ export const debounce = (fn: Function, delay: number) => {
   };
 
   return debounced;
+};
+
+const storage = new MMKV();
+
+export const saveCityDataToStorage = (data: any) => {
+  storage.set('cityData', JSON.stringify(data));
+};
+
+export const getCityDataFromStorage = () => {
+  const cityData = storage.getString('cityData');
+  return cityData ? JSON.parse(cityData) : [];
 };

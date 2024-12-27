@@ -2,8 +2,19 @@ import {View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {FlashList} from '@shopify/flash-list';
 import {CityData} from './mockServer';
-import {AppHeader, CityCard, FilterModal} from './components';
-import {CityItem, debounce} from './utils';
+import {
+  AppHeader,
+  CityCard,
+  MemoizesFilterModal,
+  NoInternetHeader,
+} from './components';
+import {
+  CityItem,
+  debounce,
+  getCityDataFromStorage,
+  saveCityDataToStorage,
+} from './utils';
+import NetInfo from '@react-native-community/netinfo';
 
 const Home = () => {
   const [searchedText, setSearchedText] = useState<string>('');
@@ -13,6 +24,26 @@ const Home = () => {
   const [sortOption, setSortOption] = useState<'name' | 'population' | null>(
     null,
   );
+  const [cities, setCities] = useState<CityItem[]>([]);
+  const [isInternet, setIsInternet] = useState<boolean | null>(false);
+
+  useEffect(() => {
+    const fetchCityData = async () => {
+      const isConnected = await NetInfo.fetch().then(
+        state => state.isConnected,
+      );
+      setIsInternet(isConnected);
+      if (isConnected) {
+        const fetchedCityData = CityData;
+        setCities(fetchedCityData);
+        saveCityDataToStorage(fetchedCityData);
+      } else {
+        const storedData = getCityDataFromStorage();
+        setCities(storedData);
+      }
+    };
+    fetchCityData();
+  }, []);
 
   const updateDebouncedSearchText = useCallback(
     debounce((text: string) => {
@@ -32,29 +63,37 @@ const Home = () => {
     };
   }, [updateDebouncedSearchText]);
 
-  const filteredAndSortedCities = useMemo(() => {
-    let result = [...CityData];
+  const CityDataWithLowercaseNames = useMemo(() => {
+    return cities.map(city => ({
+      ...city,
+      lowercaseName: city.Desitnation.toLowerCase(),
+    }));
+  }, [cities]);
 
+  const filteredCities = useMemo(() => {
+    let result = [...CityDataWithLowercaseNames];
     if (debouncedSearchedText) {
       const lowerCaseText = debouncedSearchedText.toLowerCase();
       result = result.filter(city =>
-        city.Desitnation.toLowerCase().includes(lowerCaseText),
+        city.lowercaseName.includes(lowerCaseText),
       );
     }
+    return result;
+  }, [debouncedSearchedText, CityDataWithLowercaseNames]);
+
+  const sortedCities = useMemo(() => {
+    let result = [...filteredCities];
 
     if (sortOption) {
-      result = result.sort((a, b) => {
-        if (sortOption === 'name') {
-          return a.Desitnation.localeCompare(b.Desitnation);
-        } else if (sortOption === 'population') {
-          return a.population - b.population;
-        }
-        return 0;
-      });
+      if (sortOption === 'name') {
+        result.sort((a, b) => a.lowercaseName.localeCompare(b.lowercaseName));
+      } else if (sortOption === 'population') {
+        result.sort((a, b) => a.population - b.population);
+      }
     }
 
     return result;
-  }, [searchedText, sortOption]);
+  }, [filteredCities, sortOption]);
 
   const closeModal = useCallback(() => {
     setIsModalVisible(false);
@@ -62,13 +101,14 @@ const Home = () => {
 
   return (
     <View style={{flex: 1, paddingVertical: 20}}>
+      {!isInternet && <NoInternetHeader />}
       <AppHeader
         searchedText={searchedText}
         handleSearchChange={(text: string) => handleSearchChange(text)}
         setModalVisible={setIsModalVisible}
       />
       <FlashList
-        data={filteredAndSortedCities}
+        data={sortedCities}
         renderItem={({item}) => <CityCard item={item} />}
         keyExtractor={item => item?.ID.toString()}
         contentContainerStyle={{paddingHorizontal: 20}}
@@ -76,7 +116,7 @@ const Home = () => {
         estimatedItemSize={85}
         getItemType={() => 'default'}
       />
-      <FilterModal
+      <MemoizesFilterModal
         isVisible={isModalVisible}
         closeModal={closeModal}
         setSortOption={setSortOption}
