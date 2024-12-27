@@ -7,6 +7,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 5},
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   cityDetailContainerStyle: {
     flexDirection: 'row',
